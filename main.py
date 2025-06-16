@@ -56,12 +56,11 @@ def get_font(image, text, width, height):
 
 
 def add_discoloration(color, strength):
-    # Adjust RGB values to add discoloration
-    r, g, b = color
-    r = max(0, min(255, r + strength))  # Ensure RGB values are within valid range
+    r, g, b = color[:3]
+    r = max(0, min(255, r + strength))
     g = max(0, min(255, g + strength))
     b = max(0, min(255, b + strength))
-    
+
     if r == 255 and g == 255 and b == 255:
         r, g, b = 245, 245, 245
 
@@ -69,26 +68,27 @@ def add_discoloration(color, strength):
 
 
 def get_background_color(image, x_min, y_min, x_max, y_max):
-    # Define the margin for the edges
+    image = image.convert('RGBA')  # Handle transparency
+
     margin = 10
+    edge_region = image.crop((
+        max(x_min - margin, 0),
+        max(y_min - margin, 0),
+        min(x_max + margin, image.width),
+        min(y_max + margin, image.height),
+    ))
 
-    # Crop a small region around the edges of the bounding box
-    edge_region = image.crop(
-        (
-            max(x_min - margin, 0),
-            max(y_min - margin, 0),
-            min(x_max + margin, image.width),
-            min(y_max + margin, image.height),
-        )
-    )
+    pixels = list(edge_region.getdata())
+    opaque_pixels = [pixel[:3] for pixel in pixels if pixel[3] > 0]
 
-    # Find the most common color in the cropped region
-    edge_colors = edge_region.getcolors(edge_region.size[0] * edge_region.size[1])
-    background_color = max(edge_colors, key=lambda x: x[0])[1]
+    if not opaque_pixels:
+        background_color = (255, 255, 255)  # fallback if all pixels are transparent
+    else:
+        from collections import Counter
+        most_common = Counter(opaque_pixels).most_common(1)[0][0]
+        background_color = most_common
 
-    # Add a bit of discoloration to the background color
     background_color = add_discoloration(background_color, 40)
-
     return background_color
 
 
