@@ -497,15 +497,14 @@ class ImageTranslatorGUI:
 
             for box_item in self.text_boxes:
                 coords = box_item.coordinates
-                # 使用更醒目的颜色
-                color = 'lime' if box_item.selected else 'red'  # lime 比 green 更鲜艳
-                width = 5 if box_item.selected else 3  # 更粗的线条
+                color = 'lime' if box_item.selected else 'red'
+                width = 3 if box_item.selected else 2
 
                 # 绘制矩形
                 points = [(int(p[0]), int(p[1])) for p in coords]
                 draw.polygon(points, outline=color, width=width)
 
-                # 绘制序号 - 使用更大更醒目的样式
+                # 绘制序号
                 x_min = min(p[0] for p in coords)
                 y_min = min(p[1] for p in coords)
 
@@ -513,11 +512,10 @@ class ImageTranslatorGUI:
                 number_text = str(box_item.index + 1)
 
                 try:
-                    # 使用更大的字体
-                    number_font = ImageFont.truetype("C:/Windows/Fonts/msyhbd.ttc", 28)  # 微软雅黑粗体
+                    number_font = ImageFont.truetype("C:/Windows/Fonts/msyhbd.ttc", 12)
                 except:
                     try:
-                        number_font = ImageFont.truetype("C:/Windows/Fonts/msyh.ttc", 28)
+                        number_font = ImageFont.truetype("C:/Windows/Fonts/msyh.ttc", 12)
                     except:
                         number_font = ImageFont.load_default()
 
@@ -526,13 +524,13 @@ class ImageTranslatorGUI:
                 text_width = bbox[2] - bbox[0]
                 text_height = bbox[3] - bbox[1]
 
-                # 序号位置 - 在文本框左上角上方
+                # 序号位置
                 number_x = x_min
-                number_y = max(5, y_min - text_height - 8)  # 留出8像素间隔
+                number_y = max(5, y_min - text_height - 8)
 
                 # 绘制序号背景（半透明矩形）
                 padding = 4
-                bg_color = (0, 255, 0, 200) if box_item.selected else (255, 0, 0, 200)  # RGBA
+                bg_color = (0, 255, 0, 100) if box_item.selected else (255, 0, 0, 100)  # RGBA
                 draw.rectangle(
                     [number_x - padding, number_y - padding,
                      number_x + text_width + padding, number_y + text_height + padding],
