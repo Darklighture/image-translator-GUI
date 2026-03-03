@@ -512,10 +512,10 @@ class ImageTranslatorGUI:
                 number_text = str(box_item.index + 1)
 
                 try:
-                    number_font = ImageFont.truetype("C:/Windows/Fonts/msyhbd.ttc", 12)
+                    number_font = ImageFont.truetype("C:/Windows/Fonts/msyhbd.ttc", 28)
                 except:
                     try:
-                        number_font = ImageFont.truetype("C:/Windows/Fonts/msyh.ttc", 12)
+                        number_font = ImageFont.truetype("C:/Windows/Fonts/msyh.ttc", 28)
                     except:
                         number_font = ImageFont.load_default()
 
